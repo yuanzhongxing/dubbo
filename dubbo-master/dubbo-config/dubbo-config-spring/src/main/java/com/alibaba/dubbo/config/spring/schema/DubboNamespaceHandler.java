@@ -42,6 +42,9 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport {
 	}
 
 	public void init() {
+        /**
+         * 注册BeanDefinitionParser，利用它来解析对应的标签，比如reference（消费者），通过DubboBeanDefinitionParser 来解析标签，返回bean，最终注入到spring容器
+         */
 	    registerBeanDefinitionParser("application", new DubboBeanDefinitionParser(ApplicationConfig.class, true));
         registerBeanDefinitionParser("module", new DubboBeanDefinitionParser(ModuleConfig.class, true));
         registerBeanDefinitionParser("registry", new DubboBeanDefinitionParser(RegistryConfig.class, true));

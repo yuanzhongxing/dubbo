@@ -242,6 +242,9 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if (path == null || path.length() == 0) {
             path = interfaceName;
         }
+        /**
+         * 关键代码，发布服务
+         */
         doExportUrls();
     }
 
@@ -279,14 +282,20 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void doExportUrls() {
+        /**
+         * 获得注册中心的集合
+         */
         List<URL> registryURLs = loadRegistries(true);
-        for (ProtocolConfig protocolConfig : protocols) {
+        for (ProtocolConfig protocolConfig : protocols) {//多协议发布
             doExportUrlsFor1Protocol(protocolConfig, registryURLs);
         }
     }
 
     private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {
         String name = protocolConfig.getName();
+        /**
+         * 如果协议是名是肯呢个的，默认用dubbo协议发布服务
+         */
         if (name == null || name.length() == 0) {
             name = "dubbo";
         }
@@ -333,6 +342,10 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if (provider != null && (port == null || port == 0)) {
             port = provider.getPort();
         }
+
+        /**
+         * 获取默认发布服务的端口号，如果为空，随机生成一个
+         */
         final int defaultPort = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(name).getDefaultPort();
         if (port == null || port == 0) {
             port = defaultPort;
@@ -451,6 +464,10 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if ((contextPath == null || contextPath.length() == 0) && provider != null) {
             contextPath = provider.getContextpath();
         }
+
+        /**
+         * 根据以上获取的内容，生成url
+         */
         URL url = new URL(name, host, port, (contextPath == null || contextPath.length() == 0 ? "" : contextPath + "/") + path, map);
 
         if (ExtensionLoader.getExtensionLoader(ConfiguratorFactory.class)

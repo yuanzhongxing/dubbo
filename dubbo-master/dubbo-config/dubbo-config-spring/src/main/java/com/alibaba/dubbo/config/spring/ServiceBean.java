@@ -122,7 +122,8 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
 
     @SuppressWarnings({ "unchecked", "deprecation" })
 	public void afterPropertiesSet() throws Exception {
-        if (getProvider() == null) {
+
+        if (getProvider() == null) {//正常这里不会为空，如果为空，也就是不用spring容器，这里就重新设置响应的值，这里主要就是不适用spring才用得到
             Map<String, ProviderConfig> providerConfigMap = applicationContext == null ? null  : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProviderConfig.class, false, false);
             if (providerConfigMap != null && providerConfigMap.size() > 0) {
                 Map<String, ProtocolConfig> protocolConfigMap = applicationContext == null ? null  : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
@@ -154,7 +155,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             }
         }
         if (getApplication() == null
-                && (getProvider() == null || getProvider().getApplication() == null)) {
+                && (getProvider() == null || getProvider().getApplication() == null)) {//正常这里不会为空，如果为空，也就是不用spring容器，这里就重新设置响应的值，这里主要就是不适用spring才用得到
             Map<String, ApplicationConfig> applicationConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ApplicationConfig.class, false, false);
             if (applicationConfigMap != null && applicationConfigMap.size() > 0) {
                 ApplicationConfig applicationConfig = null;
@@ -172,7 +173,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             }
         }
         if (getModule() == null
-                && (getProvider() == null || getProvider().getModule() == null)) {
+                && (getProvider() == null || getProvider().getModule() == null)) {//正常这里不会为空，如果为空，也就是不用spring容器，这里就重新设置响应的值，这里主要就是不适用spring才用得到
             Map<String, ModuleConfig> moduleConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ModuleConfig.class, false, false);
             if (moduleConfigMap != null && moduleConfigMap.size() > 0) {
                 ModuleConfig moduleConfig = null;
@@ -191,7 +192,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         }
         if ((getRegistries() == null || getRegistries().size() == 0)
                 && (getProvider() == null || getProvider().getRegistries() == null || getProvider().getRegistries().size() == 0)
-                && (getApplication() == null || getApplication().getRegistries() == null || getApplication().getRegistries().size() == 0)) {
+                && (getApplication() == null || getApplication().getRegistries() == null || getApplication().getRegistries().size() == 0)) {//正常这里不会为空，如果为空，也就是不用spring容器，这里就重新设置响应的值，这里主要就是不适用spring才用得到
             Map<String, RegistryConfig> registryConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, RegistryConfig.class, false, false);
             if (registryConfigMap != null && registryConfigMap.size() > 0) {
                 List<RegistryConfig> registryConfigs = new ArrayList<RegistryConfig>();
@@ -226,6 +227,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         }
         if ((getProtocols() == null || getProtocols().size() == 0)
                 && (getProvider() == null || getProvider().getProtocols() == null || getProvider().getProtocols().size() == 0)) {
+            //正常这里不会为空，如果为空，也就是不用spring容器，这里就重新设置响应的值，这里主要就是不适用spring才用得到
             Map<String, ProtocolConfig> protocolConfigMap = applicationContext == null ? null  : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
             if (protocolConfigMap != null && protocolConfigMap.size() > 0) {
                 List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
@@ -246,6 +248,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 setPath(beanName);
             }
         }
+
+        /**
+         * 关键方法，如果不延迟，那么就把服务发布出去
+         */
         if (! isDelay()) {
             export();
         }
